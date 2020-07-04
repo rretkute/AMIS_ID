@@ -1,5 +1,6 @@
 # AMIS_ID
 
+Adaptive multiple importance sampling for infectious diseases.
 
 Code relating to Retkute et al. "Integrating geostatistical maps and transmission models using adaptive multiple importance sampling".
 
