@@ -1,4 +1,41 @@
 
+H <-function(x) as.numeric(x>0)
+
+
+get.WW.and.ESS<-function(prev, sim, w1){
+  n.sim<-length(sim)
+  n.pixels<-nrow(prev)
+  n.samples<-ncol(prev)
+  WW.cnt<-matrix(0, nrow=n.pixels, ncol=n.sim)
+  g<-rep(0, n.sim)
+  for(j in 1:n.sim){
+    x1<-H(delta/2-abs(prev-sim[j]))
+    x2<-matrix(x1, ncol=n.samples, nrow=n.pixels)
+    x3<-rowSums(x2)
+    WW.cnt[,j]<-x3
+    g[j]<-sum(w1[which(abs(sim-sim[j])<=delta/2)])/sum(w1)
+  } 
+  
+  ess<-c()
+  WW<-matrix(0, nrow=n.pixels, ncol=n.sim)
+  for(i in 1:n.pixels){
+    f<-WW.cnt[i,]
+    ww<-w1*(f/g)  
+    if(sum(ww) >0)
+      ww<-ww/sum(ww)
+    WW[i,]<-ww
+    if(sum(ww)>0) {
+      www<-(sum((ww)^2))^(-1)
+    } else {
+      www<-0
+    }
+    ess[i]<- www
+  }
+  
+  return(list(WW, ess))
+}
+
+
 mvtComp<-function(df=3){
 	list("d"=function(xx,mu=rep(0,ncol(xx)),Sig=diag(1,ncol(xx),ncol(xx)),log=FALSE){
 		dmt(xx,mean=mu,S=Sig,df=df,log=log)
